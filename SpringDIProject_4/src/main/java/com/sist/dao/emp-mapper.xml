@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- MyBatis : Connection(전체 SQL을 모아준다) -->
+ <!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.sist.dao.emp-mapper">
+ 	<select id="empListData" resultType="EmpVO">
+		SELECT empno,ename,job,hiredate,sal
+		FROM emp  	
+ 	</select>
+ 	<select id="empDetailData" resultType="EmpVO" parameterType="int">
+ 		SELECT empno,ename,job,TO_CHAR(hiredate,'YYYY-MM-DD') as dbday,sal,comm,mgr,deptno
+ 		FROM emp
+ 		WHERE empno=#{empno}
+ 	</select>
+ </mapper>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-config.dtd">
+ <configuration>
+ 	<!-- VO를 등록 -->
+ 	<typeAliases>
+ 		<typeAlias type="com.sist.dao.StudentVO" alias="StudentVO"/>
+ 	</typeAliases>
+ 	<!-- SQL 등록 -->
+ 	<mappers>
+ 		<mapper resource="com/sist/dao/student-mapper.xml"/>
+ 	</mappers>
+ </configuration>

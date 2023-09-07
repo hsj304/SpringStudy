@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee https://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+     <servlet>
+      <servlet-name>dispatcher</servlet-name>
+      <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+      <init-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/config/application-*.xml</param-value>
+      </init-param>
+        <!-- WebApplicationContext -->
+      <!-- 
+       스프링 5 (주로 사용이 자바로만 코딩) => 보안 
+       XML태그 = Annotation으로 변경됨 
+      <init-param>
+        <param-name>contextClass</param-name>
+        <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+      </init-param>
+      <init-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>com.sist.config.SpringConfig</param-value>
+      </init-param>
+      -->
+   </servlet>
+   <servlet-mapping>
+      <servlet-name>dispatcher</servlet-name>
+      <url-pattern>*.do</url-pattern>
+   </servlet-mapping>
+    <!-- 한글변환 등록 -->
+    <filter>
+	  <filter-name>encodingFilter</filter-name>
+	  <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+	  <init-param>
+	    <param-name>encoding</param-name>
+	    <param-value>UTF-8</param-value>
+	  </init-param>
+	</filter>
+	
+	<filter-mapping>
+	  <filter-name>encodingFilter</filter-name>
+	  <url-pattern>/*</url-pattern>
+	</filter-mapping>
+</web-app>
+
+<!-- 
+	
+	Controller (Servelt => URL 주소에 맞게 톰캣에 의해 호출)
+	DispatcherServlet => Spring 라이브러리
+		: class 관리자
+	  <init-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/config/application-*.xml</param-value>
+      </init-param>
+	
+	HttpServletRequest : 사용하지 않는다 (권장)
+		=> 한글 변환 등록
+		=> Cookie 사용
+		=> HttpServletResponse : Cookie, 파일 업로드
+		=> HttpServletRequest : 사용자의 요청 값, JSP로 결과 값 전송
+				ㅣ
+				요청값은 매개변수로 설정, 전송은 Model
+				
+	DispatcherServlet의 요청 경로 설정해주기
+	.do로 요청을하면 Dispatcher가 요청 페이지를 찾아준다
+		<servlet-mapping>
+		      <servlet-name>dispatcher</servlet-name>
+		      <url-pattern>*.do</url-pattern>
+		</servlet-mapping>	
+	
+	DispatcherServelt => HandlerMapping => Model (사용자 정의)
+											@Controller
+											@RestController => 메소드를 찾아서 요청수행
+																@RequestMapping (Get/Post)
+																@GetMapping (Get)
+																@PostMapping (Post)
+								   ViewResolver <=============  
+									 => 경로명, 확장자 => return과 관련
+									 => JSP를 찾아서 request를 전송
+									 ㅣ
+									 결과값을 받아서 출력 : JSP
+				브라우저에 출력 <=====  
+				
+				1. 환경 설정 , class 등록, db 연결 => application-*.xml
+				2. 메모리 할당
+					1) XML로 설정 =>  <bean> : 공용
+					2) Annotation을 이용한다 <component-scan base-package="">
+						=> 패키지 단위로 등록하여 선별적으로 메모리 할당
+						=> 기능별 메모리 할당 요청
+							= 일반 클래스 (@Compnant)
+											= JUit
+											= ~Manager (OpenAPI) : data.go.krm kakao  
+							= 데이터베이스 연결 (@Repository, @Service)
+											= 케이블 한 개 연결
+											@Service
+											= 테이블 여러 개 연결
+											= BI
+							= Model (기능) => 조립기 (데이터베이스+브라우저 전송)
+											@Controller
+											= 요청 처리 /  화면 이동
+											= forward 기법
+												request를 전송
+												request.setAttribut()
+												model.addtribute()
+											= return "경로명/jsp명"
+											= redirect 기법
+												request를 초기화 => 지정된 화명으로 이덩
+												return "redirect: ~.do"; => 재사용 기법
+											    _ok.do
+											= 매개변수 사용
+												(request.getParameter(), ... Model, ..기타(내장객체))
+												HttpServletRequest
+												HttpServletResponse
+												HttpSession
+												RedirectAttribute
+												ModelAttribute
+												 VO , [], List
+												일반변수 : 해당변수, 모든 데이터를  String으로 받을 수 있ㄴ
+											@RestController
+												화면 이동 X => 다른 언어에 접근할 때
+																ㅣ
+															일반 데이터 전송 가능
+															JSON
+															VO = {}
+															List = []
+											
+											= 공통으로 사용되는 예외처리
+												@ControllerAdvice
+												@Restv]Vpiirsty
+											= 인터셉터
+											= 자바 환경 설정 파일	
+							= 공통으로 사용되는 예외처리
+							= 인터셉트
+							= 자바 환경 설정 파일
+		
+
+				Spring 기반
+				Spring을 통해서 클래스 관리
+								=> 객체 생졍주기 (생성 ~ 소멸)
+												  ㅣ
+												  생성시 필요한 데이터가 존재할 수 있다
+												  	= 필요한 데이터를 전송 DI
+												  	= Setter DI, Constructor DI, Method DI
+												  	= XML을 이용해서 전송, Autowired
+												  	= 클래스와 클래스의 연관 관계도를 작성하는 것이다
+				
+				AOP
+					공통 모듈 => 핵심만 소스 코딩
+					
+						JoinPoint, PointCut
+							 ㅣ
+					    호출시점 설정
+					    
+					    = Before
+					    = After
+					    = After-Throwing
+					    = After-Returning
+					    = Around
+				
+				public String display() {
+				
+					Before
+				
+				try {
+				
+					Around
+					
+					Around
+				
+				} catch (Exception ex) {
+					After-Throwing
+				} finally {
+					After
+				}
+					return "";
+					After-Returning
+				}
+				
+				= Application / WebApplication(MVC) => 동작을 할 수 있께 미리 틀을 제작
+				
+				
+				
+ -->
