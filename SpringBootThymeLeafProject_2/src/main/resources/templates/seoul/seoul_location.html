@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<title>Insert title here</title>
+<style type="text/css">
+	.container{
+		margin-top: 50px;
+	}
+	.row {
+		margin: 0 auto;
+		width: 960px;
+	}
+</style>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<form method=post action="/seoul/seoul_location">
+				<input type=text name=fd size=20 class="input-sm" th:value="${fd}">
+				<button class="btn btn-sm btn-primary">검색</button>
+			</form>
+		</div>
+		
+		<div style="height: 10px;"></div>
+		
+		<div class="row">
+			  <div class="col-md-3" th:each="vo:${list}">
+			    <div class="thumbnail">
+			      <a href="#">
+			        <img th:src="${vo.poster}" alt="Lights" style="width:100%">
+			        <div class="caption">
+			          <p th:text="${vo.title}"></p>
+			        </div>
+			      </a>
+			    </div>
+			  </div>
+		</div>
+		<div style="height: 10px;"></div>
+		
+		<div class="row">
+			<div class="text-center">
+				<ul class="pagination">
+				  <li th:if="${startpage>1}"><a th:href="@{/seoul/seoul_location(page=${startpage-1},fd=${fd})}">&lt;</a></li>
+				  <li th:class="${curpage==i?'active':''}" th:each="i:${#numbers.sequence(startpage,endpage)}">
+				  	<a th:href="@{/seoul/seoul_location(page=${i},fd=${fd})}" th:text="${i}"></a>
+				  </li>
+				  <li th:if="${endpage<totalpage}"><a th:href="@{/seoul/seoul_location(page=${endpage+1},fd=${fd})}">&gt;</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
